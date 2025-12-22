@@ -25,4 +25,5 @@ export default function PhotoChoice({ photos, selected, onSelect }) {
             ))}
         </div>
     );
+
 }
