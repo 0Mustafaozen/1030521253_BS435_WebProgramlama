@@ -3,7 +3,7 @@ import React from 'react';
 const WelcomeScreen = ({ onStart }) => {
     return (
         <div className="welcome-screen">
-            <h1>AI Dedektifi: Gerçeği Bul</h1>
+            <h1>AI Görsel Oyunu: Gerçeği Bul</h1>
             <p>Yapay zeka tarafından üretilen görselleri ayırt edebilir misin?</p>
 
             <div className="rules">

@@ -1,0 +1,81 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+/* Resimlerin yan yana durduğu kapsayıcı kutu */
+.images-container {
+  display: flex;
+  justify-content: center; /* Ortala */
+  gap: 20px;               /* Aralarına boşluk koy */
+  flex-wrap: wrap;         /* Ekran küçülürse alt satıra geçsin */
+  margin-top: 30px;
+}
+
+/* Her bir resmin çerçevesi */
+.image-card {
+  width: 400px;        /* HEPSİ AYNI GENİŞLİKTE OLSUN */
+  height: 400px;       /* HEPSİ AYNI YÜKSEKLİKTE OLSUN */
+
+  cursor: pointer;     /* Üzerine gelince el işareti çıksın */
+  border: 4px solid transparent; /* Seçim yaparken kenarlık için yer ayır */
+  border-radius: 12px; /* Köşeleri yuvarlat */
+  overflow: hidden;    /* Resim taşarsa gizle */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Hafif gölge */
+  transition: transform 0.2s, border-color 0.2s; /* Animasyon */
+  background-color: #f0f0f0; /* Resim yüklenene kadar gri görünsün */
+}
+
+/* Çerçevenin içindeki resim */
+.image-card img {
+  width: 100%;
+  height: 100%;
+
+  /* BU KOD ÇOK ÖNEMLİ: */
+  object-fit: cover;
+  /* 'cover': Resmi uzatıp büzmeden kutuyu tamamen doldurur (fazlalıkları kırpar) */
+  /* 'contain': Resmi kutuya sığdırır ama boşluk kalabilir (kırpma yapmaz) */
+}
+
+/* Mouse ile üzerine gelince */
+.image-card:hover {
+  transform: scale(1.05); /* Hafifçe büyüsün */
+  border-color: #646cff;  /* Kenarlık rengi */
+}

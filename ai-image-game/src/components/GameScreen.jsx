@@ -1,46 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { questions } from '../data/questions'; // Veri dosyanız
+import { generateQuestions } from '../data/questions'; // Yeni fonksiyonu import et
 import ResultModal from './ResultModal';
 
 const GameScreen = ({ mode, onEnd }) => {
+    // Soruları state içinde tutuyoruz çünkü artık dinamik oluşturuluyorlar
+    const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [attempt, setAttempt] = useState(1); // 1. veya 2. deneme
+    const [attempt, setAttempt] = useState(1);
     const [showHint, setShowHint] = useState(false);
     const [score, setScore] = useState(0);
     const [gameOver, setGameOver] = useState(false);
-    const [message, setMessage] = useState(""); // Kullanıcıya anlık geri bildirim
+    const [message, setMessage] = useState("");
+
+    // Oyun başladığında soruları üret
+    useEffect(() => {
+        // Dedektif moduysa 5 soru, Sonsuz modsa örneğin 50 soru üretelim
+        const questionCount = mode === 'detective' ? 5 : 50;
+        const newQuestions = generateQuestions(questionCount);
+        setQuestions(newQuestions);
+    }, [mode]);
+
+    // Sorular henüz yüklenmediyse bekle
+    if (questions.length === 0) {
+        return <div className="loading">Sorular Hazırlanıyor...</div>;
+    }
 
     const currentQuestion = questions[currentQuestionIndex];
 
-    // Görselleri karıştırmak için (opsiyonel)
-    // useEffect içinde shuffle mantığı kurulabilir.
-
-    const handleImageClick = (imageId, isAi) => {
+    const handleImageClick = (isAi) => {
         if (gameOver) return;
 
-        // DOĞRU TAHMİN
         if (isAi) {
-            let points = attempt === 1 ? 20 : 10; // İlk hakta bilirse tam puan
+            // DOĞRU
+            let points = attempt === 1 ? 20 : 10;
             setScore(score + points);
-            setMessage("Tebrikler! Doğru bildin.");
+            setMessage("Tebrikler! Doğru bildin. 🎯");
 
-            setTimeout(() => {
-                nextLevel();
-            }, 1500);
-        }
-        // YANLIŞ TAHMİN
-        else {
+            // Hızlıca diğer soruya geç
+            setTimeout(() => nextLevel(), 1000);
+        } else {
+            // YANLIŞ
             if (attempt === 1) {
-                // İLK YANLIŞ: İpucu göster
                 setAttempt(2);
                 setShowHint(true);
-                setMessage("Yanlış cevap! İpucuna bak ve tekrar dene.");
+                setMessage("Yanlış! İpucu açıldı, tekrar dene.");
             } else {
-                // İKİNCİ YANLIŞ: Oyun biter veya tur biter
                 if (mode === 'survival') {
                     finishGame();
                 } else {
-                    setMessage("Maalesef bilemedin. Sıradaki soru...");
+                    setMessage("Bilemedin. Sıradaki soru...");
                     setTimeout(() => nextLevel(), 1500);
                 }
             }
@@ -63,7 +71,7 @@ const GameScreen = ({ mode, onEnd }) => {
     };
 
     if (gameOver) {
-        return <ResultModal score={score} onRestart={onEnd} total={questions.length} />;
+        return <ResultModal score={score} total={currentQuestionIndex + 1} onRestart={onEnd} />;
     }
 
     return (
@@ -71,6 +79,7 @@ const GameScreen = ({ mode, onEnd }) => {
             <div className="status-bar">
                 <span>Mod: {mode === 'detective' ? 'Dedektif' : 'Sonsuz'}</span>
                 <span>Puan: {score}</span>
+                <span>Soru: {currentQuestionIndex + 1} / {questions.length}</span>
             </div>
 
             <h2>Hangi görsel AI tarafından üretildi?</h2>
@@ -79,9 +88,7 @@ const GameScreen = ({ mode, onEnd }) => {
 
             <div className="images-container">
                 {currentQuestion.images.map((img) => (
-                    // Eğer ipucu açıksa ve bu resim AI değilse (ve yanlış seçilmişse)
-                    // görseli grileştirmek gibi CSS stilleri eklenebilir.
-                    <div key={img.id} onClick={() => handleImageClick(img.id, img.isAi)} className="image-card">
+                    <div key={img.id} onClick={() => handleImageClick(img.isAi)} className="image-card">
                         <img src={img.url} alt="tahmin" />
                     </div>
                 ))}
